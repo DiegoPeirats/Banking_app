@@ -1,0 +1,5 @@
+package com.diego_peirats.infrastructure.configuration;
+
+public class JwtAuthenticationFilter {
+
+}

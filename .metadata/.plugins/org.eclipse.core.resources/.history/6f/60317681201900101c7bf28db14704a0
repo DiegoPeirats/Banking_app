@@ -1,0 +1,5 @@
+package com.diego_peirats.domain.service;
+
+public interface EmailService {
+
+}

@@ -1,0 +1,22 @@
+package com.diego_peirats.domain.service;
+
+import com.diego_peirats.application.response.BankResponse;
+import com.diego_peirats.infrastructure.request.CreditDebitRequest;
+import com.diego_peirats.infrastructure.request.EnquiryRequest;
+import com.diego_peirats.infrastructure.request.TransferRequest;
+import com.diego_peirats.infrastructure.request.UserRequest;
+
+public interface UserService {
+	
+	BankResponse createAccount(UserRequest request);
+	
+	BankResponse balanceEnquiry(EnquiryRequest request);
+	
+	String nameEnquiry(EnquiryRequest request);
+	
+	BankResponse creditAccount(CreditDebitRequest request);
+
+	BankResponse debitAccount(CreditDebitRequest request);
+
+	BankResponse transfer(TransferRequest request);
+}

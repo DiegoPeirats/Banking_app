@@ -1,0 +1,112 @@
+package com.diego_peirats.application.service;
+
+import java.math.BigDecimal;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.diego_peirats.application.response.AccountInfo;
+import com.diego_peirats.application.response.BankResponse;
+import com.diego_peirats.application.response.EmailDetails;
+import com.diego_peirats.application.utils.AccountUtils;
+import com.diego_peirats.domain.entity.User;
+import com.diego_peirats.domain.service.UserService;
+import com.diego_peirats.infrastructure.repository.UserRepository;
+import com.diego_peirats.infrastructure.request.EnquiryRequest;
+import com.diego_peirats.infrastructure.request.UserRequest;
+
+@Service
+public class UserServiceImpl implements UserService{
+	
+	@Autowired
+	private UserRepository repository;
+	
+	@Autowired
+	private EmailServiceImpl emailService;
+
+	@Override
+	public BankResponse createAccount(UserRequest request) {
+		
+		if (repository.existsByEmail(request.getEmail())) {
+			return BankResponse.builder()
+					.responseCode(AccountUtils.ACCOUNT_EXISTS_CODE)
+					.responseMessage(AccountUtils.ACCOUNT_EXISTS_MESSAGE)
+					.accountInfo(null)
+					.build();
+		}
+
+		User user = User.builder()
+				.firstName(request.getFirstName())
+				.lastName(request.getLastName())
+				.otherName(request.getOtherName())
+				.gender(request.getGender())
+				.address(request.getAddress())
+				.stateOfOrigin(request.getStateOfOrigin())
+				.accountNumber(AccountUtils.generateAccountNumber())
+				.accountBalance(BigDecimal.ZERO)
+				.email(request.getEmail())
+				.phoneNumber(request.getPhoneNumber())
+				.status("ACTIVE")
+				.build();
+		
+		User savedUser = repository.save(user);
+		
+		EmailDetails emailDetails = EmailDetails.builder()
+				.recipient(savedUser.getEmail())
+				.subject("ACCOUNT CREATION")
+				.messageBody("Congratulations! your account has been created")
+				.attachment(null)
+				.build();
+		
+		emailService.sendEmailAlert(emailDetails);
+		
+		return BankResponse.builder()
+				.responseCode(AccountUtils.ACCOUNT_CREATION_SUCCESS)
+				.responseMessage(AccountUtils.ACCOUNT_CREATION_MESSAGE)
+				.accountInfo(AccountInfo.builder()
+						.accountBalance(savedUser.getAccountBalance())
+						.accountName(savedUser.getFirstName() + " "
+								+ savedUser.getLastName() + " " + savedUser.getOtherName())
+						.accountNumber(savedUser.getAccountNumber())
+						.build())
+				.build();
+	}
+
+	@Override
+	public BankResponse balanceEnquiry(EnquiryRequest request) {
+
+		boolean accountExists = repository.existsByAccountNumber(request.getAccountNumber());
+		
+		if (!accountExists) {
+			return BankResponse.builder()
+					.responseCode(AccountUtils.ACCOUNT_NOT_EXIST_CODE)
+					.responseMessage(AccountUtils.ACCOUNT_NOT_EXIST_MESSAGE)
+					.accountInfo(null)
+					.build();
+		}
+		User foundUser = repository.findByAccountNumber(request.getAccountNumber());
+		
+		return BankResponse.builder()
+				.responseCode(AccountUtils.ACCOUNT_FOUND_CODE)
+				.responseMessage(AccountUtils.ACCOUNT_FOUND_SUCCESS)
+				.accountInfo(AccountInfo.builder()
+						.accountBalance(foundUser.getAccountBalance())
+						.accountNumber(request.getAccountNumber())
+						.accountName(foundUser.getFirstName() + " " + foundUser.getLastName() + " " + foundUser.getOtherName())
+						.build())
+				.build();
+	}
+
+	@Override
+	public String nameEnquiry(EnquiryRequest request) {
+		boolean accountExists = repository.exsistsByAccountNumber(request.getAccountNumber());
+		
+		if (!accountExists) {
+			return AccountUtils.ACCOUNT_NOT_EXIST_MESSAGE;
+		}
+		User foundUser = repository.findByAccountNumber(request.getAccountNumber());
+		return foundUser.getFirstName() + " " + foundUser.getLastName();
+		
+	}
+
+}

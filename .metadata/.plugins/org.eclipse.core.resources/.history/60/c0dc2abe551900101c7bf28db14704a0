@@ -1,0 +1,9 @@
+package com.diego_peirats.domain.service;
+
+import com.diego_peirats.domain.entity.Transaction;
+
+public interface TransactionService {
+	
+	void saveTransaction(Transaction transaction);
+
+}

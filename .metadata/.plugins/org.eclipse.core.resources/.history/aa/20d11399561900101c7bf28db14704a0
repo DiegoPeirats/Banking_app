@@ -1,0 +1,20 @@
+package com.diego_peirats.application.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.diego_peirats.domain.entity.Transaction;
+import com.diego_peirats.domain.service.TransactionService;
+import com.diego_peirats.infrastructure.repository.TransactionRepository;
+
+public class TransactionServiceImpl implements TransactionService{
+
+	@Autowired
+	private TransactionRepository repository;
+	
+	@Override
+	public void saveTransaction(Transaction transaction) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

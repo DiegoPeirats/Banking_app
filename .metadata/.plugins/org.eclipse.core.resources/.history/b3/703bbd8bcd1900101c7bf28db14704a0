@@ -1,0 +1,29 @@
+package com.diego_peirats.application.service;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
+import com.diego_peirats.domain.entity.Transaction;
+import com.diego_peirats.infrastructure.repository.TransactionRepository;
+
+import lombok.AllArgsConstructor;
+
+@Service
+public class BankStatementService {
+	
+	@Autowired
+	private TransactionRepository transactionRepository;
+
+	public List<Transaction> generateStatement(String accountNumber, LocalDate startDate, LocalDate endDate){
+		return transactionRepository.findAll()
+				.stream()
+				.filter(transaction -> transaction.getAccountNumber().equals(accountNumber))
+				.filter(transaction -> !transaction.getCreatedAt().isBefore(startDate) && !transaction.getCreatedAt().isAfter(endDate))
+				.collect(Collectors.toList());
+	}
+}
