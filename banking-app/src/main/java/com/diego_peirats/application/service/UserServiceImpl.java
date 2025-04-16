@@ -2,6 +2,7 @@ package com.diego_peirats.application.service;
 
 import java.math.BigDecimal;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +15,7 @@ import com.diego_peirats.application.response.BankResponse;
 import com.diego_peirats.application.response.EmailDetails;
 import com.diego_peirats.application.response.LoginDto;
 import com.diego_peirats.application.response.TransactionDTO;
+import com.diego_peirats.application.response.UserDto;
 import com.diego_peirats.application.utils.AccountUtils;
 import com.diego_peirats.domain.entity.Role;
 import com.diego_peirats.domain.entity.User;
@@ -32,6 +34,9 @@ public class UserServiceImpl implements UserService{
 	private UserRepository repository;
 	
 	@Autowired
+	private ModelMapper modelMapper;
+	
+	@Autowired
 	private EmailServiceImpl emailService;
 	
 	@Autowired
@@ -45,6 +50,13 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
+
+	@Override
+	public UserDto getUserByAccountNumber(String accountNumber) {
+		User user = repository.findByAccountNumber(accountNumber);
+		
+		return modelMapper.map(user, UserDto.class);
+	}
 
 	@Override
 	public BankResponse createAccount(UserRequest request) {

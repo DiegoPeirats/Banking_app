@@ -5,10 +5,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.diego_peirats.application.response.BankResponse;
 import com.diego_peirats.application.response.LoginDto;
+import com.diego_peirats.application.response.UserDto;
 import com.diego_peirats.application.service.UserServiceImpl;
 import com.diego_peirats.infrastructure.request.CreditDebitRequest;
 import com.diego_peirats.infrastructure.request.EnquiryRequest;
@@ -68,5 +70,9 @@ public class UserController {
 		return service.transfer(request);
 	}
 
+	@GetMapping("/user/{accountNumber}")
+	public UserDto userByAccountNumber(@RequestParam String accountNumber) {
+		return service.getUserByAccountNumber(accountNumber);
+	}
 
 }

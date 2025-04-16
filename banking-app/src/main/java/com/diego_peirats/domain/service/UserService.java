@@ -2,6 +2,7 @@ package com.diego_peirats.domain.service;
 
 import com.diego_peirats.application.response.BankResponse;
 import com.diego_peirats.application.response.LoginDto;
+import com.diego_peirats.application.response.UserDto;
 import com.diego_peirats.infrastructure.request.CreditDebitRequest;
 import com.diego_peirats.infrastructure.request.EnquiryRequest;
 import com.diego_peirats.infrastructure.request.TransferRequest;
@@ -22,4 +23,6 @@ public interface UserService {
 	BankResponse transfer(TransferRequest request);
 	
 	BankResponse login(LoginDto loginDto);
+	
+	UserDto getUserByAccountNumber(String accountNumber);
 }
