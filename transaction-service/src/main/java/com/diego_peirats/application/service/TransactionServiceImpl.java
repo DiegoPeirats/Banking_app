@@ -3,11 +3,11 @@ package com.diego_peirats.application.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.diego_peirats.application.response.TransactionDto;
 import com.diego_peirats.domain.entity.Transaction;
 import com.diego_peirats.domain.service.TransactionService;
 import com.diego_peirats.infrastructure.repository.TransactionRepository;
+
+import transaction.TransactionDto;
 
 @Service
 public class TransactionServiceImpl implements TransactionService{

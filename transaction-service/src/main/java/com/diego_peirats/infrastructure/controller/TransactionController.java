@@ -6,11 +6,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.diego_peirats.application.service.BankStatementService;
+import com.diego_peirats.application.service.TransactionServiceImpl;
 import com.diego_peirats.domain.entity.Transaction;
 import com.itextpdf.text.DocumentException;
 
@@ -20,8 +23,10 @@ public class TransactionController {
 	
 	@Autowired
 	private BankStatementService bankStatementService;
+	@Autowired
+	private TransactionServiceImpl transactionService;
 	
-	@GetMapping
+	@GetMapping()
 	public List<Transaction> generateBankStatement(
 			@RequestParam String accountNumber,
 			@RequestParam String startDate,

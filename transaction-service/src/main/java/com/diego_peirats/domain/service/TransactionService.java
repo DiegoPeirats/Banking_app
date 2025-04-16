@@ -1,6 +1,6 @@
 package com.diego_peirats.domain.service;
 
-import com.diego_peirats.application.response.TransactionDto;
+import transaction.TransactionDto;
 
 public interface TransactionService {
 	

@@ -8,9 +8,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.diego_peirats.application.response.UserDto;
-import com.diego_peirats.domain.entity.EmailDetails;
 import com.diego_peirats.domain.entity.Transaction;
 import com.diego_peirats.infrastructure.client.EmailClient;
 import com.diego_peirats.infrastructure.client.UserClient;
@@ -25,7 +22,9 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import email.EmailDetails;
 import lombok.extern.slf4j.Slf4j;
+import user.UserDto;
 
 @Service
 @Slf4j
