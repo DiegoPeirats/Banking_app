@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.diego_peirats.application.service.EmailServiceImpl;
-import com.diego_peirats.domain.entity.EmailDetails;
+
+import email.EmailDetails;
 
 @RestController
 @RequestMapping("/api/v1")

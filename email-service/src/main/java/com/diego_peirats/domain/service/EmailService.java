@@ -1,6 +1,6 @@
 package com.diego_peirats.domain.service;
 
-import com.diego_peirats.domain.entity.EmailDetails;
+import email.EmailDetails;
 
 public interface EmailService {
 

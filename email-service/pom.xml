@@ -55,6 +55,11 @@
 		    <artifactId>spring-boot-starter-mail</artifactId>
 		    <version>3.4.4</version>
 		</dependency>
+		<dependency>
+			<groupId>com.diego-peirats.bank</groupId>
+			<artifactId>base-domains</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
