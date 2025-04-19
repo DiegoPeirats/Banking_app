@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import email.EmailDetails;
 
-@FeignClient(name="email-service", url="http://localhost:8082")
+@FeignClient(name="email-service", url="/email-app")
 public interface EmailClient {
 	@PostMapping("/api/v1/simple-mail")
 	void simpleMail(EmailDetails details);

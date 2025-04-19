@@ -1,9 +1,0 @@
-package com.diego_peirats.domain.service;
-
-import com.diego_peirats.application.response.EmailDetails;
-
-public interface EmailService {
-
-	void sendEmailAlert(EmailDetails emailDetails);
-	void sendEmailWithAttachment(EmailDetails emailDetails);
-}

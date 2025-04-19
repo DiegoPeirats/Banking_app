@@ -1,0 +1,15 @@
+C:\Users\diego\banking-app\base-domains\src\main\java\assistant\Answer.java
+C:\Users\diego\banking-app\base-domains\src\main\java\assistant\Question.java
+C:\Users\diego\banking-app\base-domains\src\main\java\email\EmailDetails.java
+C:\Users\diego\banking-app\base-domains\src\main\java\transaction\request\BankStatementRequest.java
+C:\Users\diego\banking-app\base-domains\src\main\java\transaction\TransactionDto.java
+C:\Users\diego\banking-app\base-domains\src\main\java\transaction\TransactionEvent.java
+C:\Users\diego\banking-app\base-domains\src\main\java\user\EnquiryRequest.java
+C:\Users\diego\banking-app\base-domains\src\main\java\user\GenderType.java
+C:\Users\diego\banking-app\base-domains\src\main\java\user\request\TransferRequest.java
+C:\Users\diego\banking-app\base-domains\src\main\java\user\request\UserRequest.java
+C:\Users\diego\banking-app\base-domains\src\main\java\user\response\AccountInfo.java
+C:\Users\diego\banking-app\base-domains\src\main\java\user\response\BankResponse.java
+C:\Users\diego\banking-app\base-domains\src\main\java\user\response\UserDetailsDto.java
+C:\Users\diego\banking-app\base-domains\src\main\java\user\Role.java
+C:\Users\diego\banking-app\base-domains\src\main\java\user\UserDto.java

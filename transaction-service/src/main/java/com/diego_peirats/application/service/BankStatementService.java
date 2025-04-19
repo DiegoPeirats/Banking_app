@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.diego_peirats.domain.entity.Transaction;
@@ -24,7 +25,11 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import email.EmailDetails;
 import lombok.extern.slf4j.Slf4j;
+import transaction.TransactionDto;
+import user.EnquiryRequest;
 import user.UserDto;
+
+import static com.diego_peirats.application.utils.PdfUtils.*;
 
 @Service
 @Slf4j
@@ -39,16 +44,19 @@ public class BankStatementService {
 	@Autowired
 	private EmailClient emailClient;
 	
+	@Autowired
+	private ModelMapper modelMapper;
+	
 	private static final String FILE = "BankStatement.pdf";
 
-	public List<Transaction> generateStatement(String accountNumber, LocalDate startDate, LocalDate endDate) throws FileNotFoundException, DocumentException{
-		List<Transaction> transas =  transactionRepository.findAll()
+	public List<TransactionDto> generateStatement(String accountNumber, LocalDate startDate, LocalDate endDate) throws FileNotFoundException, DocumentException{
+		List<TransactionDto> transas =  transactionRepository.findAll()
 				.stream()
 				.filter(transaction -> transaction.getAccountNumber().equals(accountNumber))
 				.filter(transaction -> !transaction.getCreatedAt().isBefore(startDate) && !transaction.getCreatedAt().isAfter(endDate))
+				.map(transaction -> modelMapper.map(transaction, TransactionDto.class))
 				.collect(Collectors.toList());
-		UserDto user = userClient.getUserByAccountNumber(accountNumber);
-		
+		UserDto user = userClient.getUserByAccountNumber(new EnquiryRequest(accountNumber));
 		
 		Rectangle statementSize = new Rectangle(PageSize.A4);
 		Document document = new Document(statementSize);
@@ -57,48 +65,29 @@ public class BankStatementService {
 		PdfWriter.getInstance(document, outPutStream);
 		document.open();
 		
-		PdfPTable bankInfoTable = new PdfPTable(1);
-		PdfPCell bankName = new PdfPCell(new Phrase("Diego Peirats"));
-		bankName.setBorder(0);
-		bankName.setBackgroundColor(BaseColor.BLUE);
-		bankName.setPadding(20f);
+		List<PdfPCell> bankInfo = List.of(
+				createCell("Diego Peirats", BaseColor.BLUE, 20f),
+				createCell("San Mateo 58, 03013, Alicante, España", BaseColor.BLUE, 0f));
 		
-		PdfPCell bankAddress = new PdfPCell(new Phrase("San Mateo 58, 03013, Alicante, España"));
-		bankAddress.setBorder(0);
-		bankInfoTable.addCell(bankName);
-		bankInfoTable.addCell(bankAddress);
+		PdfPTable bankInfoTable = addCellsToTable(bankInfo, 1);
 		
-		PdfPTable statementInfo = new PdfPTable(2);
-		PdfPCell customerInfo = new PdfPCell(new Phrase("Start Date: " + startDate));
-		customerInfo.setBorder(0);
-		PdfPCell statement = new PdfPCell(new Phrase("STATEMENT OF ACCOUNT"));
-		statement.setBorder(0);
-		PdfPCell stopDate = new PdfPCell(new Phrase("End Date: " + endDate));
-		stopDate.setBorder(0);
-		PdfPCell name = new PdfPCell(new Phrase("Customer name: " + user.getFirstName() + " " + user.getLastName()));
-		name.setBorder(0);
-		PdfPCell space = new PdfPCell();
-		space.setBorder(0);
-		PdfPCell address = new PdfPCell(new Phrase("Customer Address " + user.getAddress()));
-		address.setBorder(0);
+		List<PdfPCell> statements = List.of(
+				createCell("Start Date: " + startDate, BaseColor.WHITE, 0f),
+				createCell("STATEMENT OF ACCOUNT", BaseColor.WHITE, 0f),
+				createCell("End Date: " + endDate, BaseColor.WHITE, 0f),
+				createCell("Customer name: " + user.getFirstName() + " " + user.getLastName(), BaseColor.WHITE, 0f),
+				createCell("", BaseColor.WHITE, 0f),
+				createCell("Customer Address " + user.getAddress(), BaseColor.WHITE, 0f));
 		
-		PdfPTable transactionsTable = new PdfPTable(4);
-		PdfPCell date = new PdfPCell(new Phrase("DATE"));
-		date.setBackgroundColor(BaseColor.BLUE);
-		date.setBorder(0);
-		PdfPCell transactionType = new PdfPCell(new Phrase("TRANSACTION TYPE"));
-		transactionType.setBorder(0);
-		PdfPCell transactionAmount = new PdfPCell(new Phrase("TRANSACTION AMOUNT"));
-		transactionAmount.setBackgroundColor(BaseColor.BLUE);
-		transactionAmount.setBorder(0);
-		PdfPCell status = new PdfPCell(new Phrase("STATUS"));
-		status.setBackgroundColor(BaseColor.BLUE);
-		status.setBorder(0);
+		PdfPTable statementInfo = addCellsToTable(statements, 2);
 		
-		transactionsTable.addCell(date);
-		transactionsTable.addCell(transactionType);
-		transactionsTable.addCell(transactionAmount);
-		transactionsTable.addCell(status);
+		List<PdfPCell> transactions = List.of(
+				createCell("DATE", BaseColor.BLUE, 0f),
+				createCell("TRANSACTION TYPE", BaseColor.WHITE, 0f),
+				createCell("TRANSACTION AMOUNT", BaseColor.BLUE, 0f),
+				createCell("STATUS", BaseColor.BLUE, 0f));
+		
+		PdfPTable transactionsTable = addCellsToTable(transactions, 4);
 		
 		transas.forEach(
 				transaction -> {
@@ -107,13 +96,6 @@ public class BankStatementService {
 					transactionsTable.addCell(new Phrase(transaction.getAmount().toString()));
 					transactionsTable.addCell(new Phrase(transaction.getStatus()));
 				});
-		
-		statementInfo.addCell(customerInfo);
-		statementInfo.addCell(statement);
-		statementInfo.addCell(endDate.toString());
-		statementInfo.addCell(name);
-		statementInfo.addCell(space);
-		statementInfo.addCell(address);
 		
 		document.add(bankInfoTable);
 		document.add(statementInfo);
