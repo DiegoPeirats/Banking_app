@@ -6,6 +6,7 @@ user\UserDto$UserDtoBuilder.class
 transaction\TransactionEvent.class
 user\response\AccountInfo.class
 assistant\Question$QuestionBuilder.class
+currency\request\TransformRequest.class
 assistant\Answer$AnswerBuilder.class
 transaction\request\BankStatementRequest$BankStatementRequestBuilder.class
 transaction\TransactionDto$TransactionDtoBuilder.class
@@ -19,10 +20,10 @@ user\request\UserRequest$UserRequestBuilder.class
 user\request\UserRequest.class
 assistant\Answer.class
 user\response\BankResponse.class
+user\response\CustomUserDetails.class
 user\UserDto.class
 assistant\Question.class
-user\response\UserDetailsDto.class
 user\EnquiryRequest$EnquiryRequestBuilder.class
-user\response\UserDetailsDto$UserDetailsDtoBuilder.class
 email\EmailDetails$EmailDetailsBuilder.class
 transaction\TransactionDto.class
+currency\request\TransformRequest$TransformRequestBuilder.class
