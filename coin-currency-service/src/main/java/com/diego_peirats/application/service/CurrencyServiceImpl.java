@@ -12,8 +12,8 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.diego_peirats.domain.service.CurrencyService;
 import com.diego_peirats.infrastructure.client.CurrencyApiClient;
-import com.diego_peirats.infrastructure.request.TransformRequest;
 
+import currency.request.TransformRequest;
 import reactor.core.publisher.Mono;
 import user.response.BankResponse;
 
