@@ -1,7 +1,10 @@
 package alert;
 
+import org.springframework.http.HttpStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,10 +12,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
+@Data
 public class AlertEvent {
 	
 	private String message;
-	private String status;
+	private HttpStatus status;
 	private AlertDto alert;
 
 }

@@ -5,6 +5,7 @@ import static com.diego_peirats.application.utils.AccountUtils.getResponse;
 import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.diego_peirats.application.response.TransactionType;
 import com.diego_peirats.domain.entity.User;
@@ -12,6 +13,8 @@ import com.diego_peirats.infrastructure.client.EmailClient;
 import com.diego_peirats.infrastructure.kafka.TransactionProducer;
 import com.diego_peirats.infrastructure.repository.UserRepository;
 
+import alert.AlertDto;
+import alert.AlertEvent;
 import email.EmailDetails;
 import transaction.TransactionDto;
 import transaction.TransactionEvent;
@@ -42,17 +45,28 @@ public class ServiceUtils {
 	}
 	
 	private void sendTransactionToSave(User user, BigDecimal amount, String type) {
-		TransactionDto transaction = TransactionDto.builder()
-				.accountNumber(user.getAccountNumber())
-				.transactionType("CREDIT")
-				.amount(amount)
-				.build();
-		TransactionEvent event = TransactionEvent.builder()
-				.message("Transaction event")
-				.status("ACCEPTED")
-				.transaction(transaction)
-				.build();
-		transactionProducer.sendMessage(event);
+		try {
+			TransactionDto transaction = TransactionDto.builder()
+					.accountNumber(user.getAccountNumber())
+					.transactionType("CREDIT")
+					.amount(amount)
+					.build();
+			TransactionEvent event = TransactionEvent.builder()
+					.message("Transaction event")
+					.status("ACCEPTED")
+					.transaction(transaction)
+					.build();
+			transactionProducer.sendMessage(event);
+		}catch(Exception e) {
+			AlertEvent event = AlertEvent.builder()
+					.message(e.getMessage())
+					.status(HttpStatus.NOT_ACCEPTABLE)
+					.alert(AlertDto.builder()
+							.accountId(user.getId())
+							.message("ABORTED TRANSACTION")
+							.build())
+					.build();
+		}
 	}
 
 	

@@ -1,5 +1,0 @@
-package com.diego_peirats.infrastructure.repository;
-
-public interface UserRepository {
-
-}
