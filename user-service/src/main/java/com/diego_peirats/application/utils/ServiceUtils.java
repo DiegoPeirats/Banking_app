@@ -66,6 +66,7 @@ public class ServiceUtils {
 							.message("ABORTED TRANSACTION")
 							.build())
 					.build();
+			transactionProducer.sendAlert(event);
 		}
 	}
 
