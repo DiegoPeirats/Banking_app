@@ -33,7 +33,7 @@ public class TransactionListener {
 			groupId = "${spring.kafka.consumer.group-id}"
 		)
 	public void consume(TransactionEvent event) {
-		LOGGER.info(String.format("Order event recieved in stock service => %s", event.toString()));
+		LOGGER.info(String.format("Transaction event recieved in stock service => %s", event.toString()));
 		Transaction transaction = modelMapper.map(event.getTransaction(), Transaction.class);
 		repository.save(transaction);
 		latch.countDown();
