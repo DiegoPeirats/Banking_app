@@ -161,5 +161,16 @@ public class UserServiceImpl implements UserService{
 			return ResponseEntity.notFound().build();
 		}
 	}
+	@Override
+	public ResponseEntity<UserDto> getUserById(Long userId) {
+		try {
+			User user = repository.findById(userId).orElseThrow(
+					() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+			
+			return ResponseEntity.ok(modelMapper.map(user, UserDto.class));
+		}catch(RuntimeException e) {
+			return ResponseEntity.notFound().build();
+		}
+	}
 
 }

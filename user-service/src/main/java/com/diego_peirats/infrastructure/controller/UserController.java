@@ -76,6 +76,11 @@ public class UserController {
 	public ResponseEntity<UserDto> userByAccountNumber(@RequestBody EnquiryRequest request) {
 		return service.getUserByAccountNumber(request.getAccountNumber());
 	}
+
+	@PostMapping("/userById")
+	public ResponseEntity<UserDto> userById(@RequestBody EnquiryRequest request) {
+		return service.getUserById(request.getUserId());
+	}
 	
 	@GetMapping("/internal/user-details/{email}")
 	public ResponseEntity<UserDetailsDto> getUserDetails(@PathVariable String email) {

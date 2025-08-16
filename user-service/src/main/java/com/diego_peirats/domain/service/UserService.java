@@ -27,4 +27,6 @@ public interface UserService {
 	BankResponse login(LoginDto loginDto);
 
 	ResponseEntity<UserDto> getUserByAccountNumber(String accountNumber);
+
+	ResponseEntity<UserDto> getUserById(Long userId);
 }

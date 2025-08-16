@@ -56,7 +56,7 @@ public class BankStatementService {
 				.filter(transaction -> !transaction.getCreatedAt().isBefore(startDate) && !transaction.getCreatedAt().isAfter(endDate))
 				.map(transaction -> modelMapper.map(transaction, TransactionDto.class))
 				.collect(Collectors.toList());
-		UserDto user = userClient.getUserByAccountNumber(new EnquiryRequest(accountNumber));
+		UserDto user = userClient.getUserByAccountNumber(new EnquiryRequest(null, accountNumber));
 		
 		Rectangle statementSize = new Rectangle(PageSize.A4);
 		Document document = new Document(statementSize);

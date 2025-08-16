@@ -2,6 +2,7 @@ package user;
 
 import java.math.BigDecimal;
 
+import loan.BorrowerRiskLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,5 +41,7 @@ public class UserDto {
 	private String status;
 	
 	private Role role;
+	
+	private BorrowerRiskLevel riskLevel;
 
 }
