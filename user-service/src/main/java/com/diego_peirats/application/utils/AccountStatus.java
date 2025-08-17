@@ -10,7 +10,9 @@ public enum AccountStatus {
     INSUFFICIENT_BALANCE("006", "Balance on the account was not enough"),
     ACCOUNT_DEBITED("007", "User account debited"),
     TRANSFER_SUCCESSFUL("008", "Transfer Successful"),
-    NOT_AUTHORIZED_TRANSFER("009", "Transfer Not Authorized");
+    NOT_AUTHORIZED_TRANSFER("009", "Transfer Not Authorized"),
+    LOAN_ACCEPTED("010", "Loan accepted"),
+    LOAN_DENIED("011", "Loan denied");
 
     private final String code;
     private final String message;

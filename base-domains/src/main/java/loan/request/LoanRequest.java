@@ -16,7 +16,7 @@ import lombok.Setter;
 @Setter
 public class LoanRequest {
 	
-	private Long userId;
+	private String accountNumber;
 	
 	private BigDecimal amount;
 	

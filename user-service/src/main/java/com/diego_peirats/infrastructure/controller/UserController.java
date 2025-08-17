@@ -19,6 +19,7 @@ import com.diego_peirats.infrastructure.request.UserRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import loan.request.LoanRequest;
 import user.EnquiryRequest;
 import user.UserDto;
 import user.response.BankResponse;
@@ -77,15 +78,15 @@ public class UserController {
 		return service.getUserByAccountNumber(request.getAccountNumber());
 	}
 
-	@PostMapping("/userById")
-	public ResponseEntity<UserDto> userById(@RequestBody EnquiryRequest request) {
-		return service.getUserById(request.getUserId());
-	}
-	
 	@GetMapping("/internal/user-details/{email}")
 	public ResponseEntity<UserDetailsDto> getUserDetails(@PathVariable String email) {
 		return service.getByUsername(email);
 	   
+	}
+	
+	@PostMapping("/processLoan")
+	public BankResponse processLoan(@RequestBody LoanRequest request) {
+		return service.processLoan(request);
 	}
 
 }

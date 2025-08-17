@@ -10,10 +10,10 @@ import user.response.BankResponse;
 
 public interface LoanService {
 	
-	ResponseEntity<String> acceptLoan(LoanRequest request);
+	BankResponse acceptLoan(LoanRequest request);
 	
 	BankResponse preArrangedLoan();
 	
-	ResponseEntity<List<LoanDto>> getUserLoanHistorial(Long userId);
+	ResponseEntity<List<LoanDto>> getUserLoanHistorial(String accountNumber);
 
 }

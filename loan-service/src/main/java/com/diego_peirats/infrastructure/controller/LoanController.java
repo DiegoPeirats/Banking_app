@@ -23,12 +23,12 @@ public class LoanController {
 	private LoanServiceImpl service;
 	
 	@PostMapping("/historial")
-	public ResponseEntity<List<LoanDto>> findUserLoanHistorial(@RequestBody Long userId){
-		return service.getUserLoanHistorial(userId);
+	public ResponseEntity<List<LoanDto>> findUserLoanHistorial(@RequestBody String accountNumber){
+		return service.getUserLoanHistorial(accountNumber);
 	}
 	
 	@PostMapping("/result")
-	public ResponseEntity<String> LoanRequestResult(@RequestBody LoanRequest request) {
+	public BankResponse LoanRequestResult(@RequestBody LoanRequest request) {
 		return service.acceptLoan(request);
 	}
 }

@@ -13,8 +13,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class EnquiryRequest {
 	
-	private Long userId;
-	
 	private String accountNumber;
 
 }

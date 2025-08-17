@@ -29,6 +29,7 @@ import com.diego_peirats.infrastructure.request.CreditDebitRequest;
 import com.diego_peirats.infrastructure.request.TransferRequest;
 import com.diego_peirats.infrastructure.request.UserRequest;
 
+import loan.request.LoanRequest;
 import user.EnquiryRequest;
 import user.Role;
 import user.UserDto;
@@ -161,15 +162,16 @@ public class UserServiceImpl implements UserService{
 			return ResponseEntity.notFound().build();
 		}
 	}
+
 	@Override
-	public ResponseEntity<UserDto> getUserById(Long userId) {
+	public BankResponse processLoan(LoanRequest request) {
+		
 		try {
-			User user = repository.findById(userId).orElseThrow(
-					() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+			utils.findUserOperateAndSendTransaction(request.getAccountNumber(), request.getAmount(), TransactionType.CREDIT);
 			
-			return ResponseEntity.ok(modelMapper.map(user, UserDto.class));
+			return getResponse(user, AccountStatus.LOAN_ACCEPTED.code(), AccountStatus.LOAN_ACCEPTED.message());
 		}catch(RuntimeException e) {
-			return ResponseEntity.notFound().build();
+			return getResponse(user, AccountStatus.LOAN_DENIED.code(), AccountStatus.LOAN_DENIED.message());
 		}
 	}
 

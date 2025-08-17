@@ -6,6 +6,7 @@ import com.diego_peirats.infrastructure.request.CreditDebitRequest;
 import com.diego_peirats.infrastructure.request.TransferRequest;
 import com.diego_peirats.infrastructure.request.UserRequest;
 
+import loan.request.LoanRequest;
 import user.EnquiryRequest;
 import user.UserDto;
 import user.response.BankResponse;
@@ -27,6 +28,6 @@ public interface UserService {
 	BankResponse login(LoginDto loginDto);
 
 	ResponseEntity<UserDto> getUserByAccountNumber(String accountNumber);
-
-	ResponseEntity<UserDto> getUserById(Long userId);
+	
+	BankResponse processLoan(LoanRequest request);
 }

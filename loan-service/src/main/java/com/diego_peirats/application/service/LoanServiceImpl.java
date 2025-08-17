@@ -16,6 +16,7 @@ import loan.request.LoanRequest;
 import loan.response.LoanDto;
 import user.EnquiryRequest;
 import user.UserDto;
+import user.response.AccountInfo;
 import user.response.BankResponse;
 
 @Service
@@ -28,32 +29,31 @@ public class LoanServiceImpl implements LoanService{
 	private UserClient userClient;
 
 	@Override
-	public ResponseEntity<String> acceptLoan(LoanRequest request) {
-		// encontrar al usuario
+	public BankResponse acceptLoan(LoanRequest request) {
 		
-		UserDto user = userClient.getUserById(new EnquiryRequest(request.getUserId(), null));
-		
-		//ver el balance de su cuenta y el tipo de credito que solicita
-		
-		if (user.getAccountBalance()
-				.multiply(BigDecimal.valueOf(request.getType().getMinAmountInAccount()))
-				.compareTo(request.getAmount()) < 0) {
-			return null; //no tiene el minimo en la cuenta
+		try {
+			UserDto user = userClient.getUserByAccountNumber(new EnquiryRequest(request.getAccountNumber()));
+			
+			if (user.getAccountBalance()
+					.multiply(BigDecimal.valueOf(request.getType().getMinAmountInAccount()))
+					.compareTo(request.getAmount()) < 0) {
+				return new BankResponse("011", "The account doesn´t have the minimum amount", 
+						new AccountInfo(user.getFirstName() + user.getLastName(), user.getAccountBalance(), user.getAccountNumber())); 
+			}
+			
+			List<LoanDto> historial = getUserLoanHistorial(request.getAccountNumber()).getBody();
+			
+			if (historial.stream()
+				.anyMatch(loan -> loan.getStatus() == LoanStatus.OPEN)) {
+				return new BankResponse("011", "You already have a open loan", 
+						new AccountInfo(user.getFirstName() + user.getLastName(), user.getAccountBalance(), user.getAccountNumber()));  
+			}
+			
+			return userClient.processLoan(request);
+		}catch(Exception e) {
+			
+			throw new IllegalArgumentException(e.getMessage());
 		}
-		
-		//ver su historial de creditos
-		List<LoanDto> historial = getUserLoanHistorial(request.getUserId()).getBody();
-		
-		if (historial.stream()
-			.anyMatch(loan -> loan.getStatus() == LoanStatus.OPEN)) {
-			return null; // ya tiene creditos en marcha
-		}
-		
-		//añadir la cantidad a la cuenta
-		
-		//dar un resultado
-		
-		return "ACCEPTED";
 	}
 
 	@Override
@@ -63,8 +63,8 @@ public class LoanServiceImpl implements LoanService{
 	}
 
 	@Override
-	public ResponseEntity<List<LoanDto>> getUserLoanHistorial(Long userId) {
-		List<LoanDto> response = repository.findAllByUserId(userId);
+	public ResponseEntity<List<LoanDto>> getUserLoanHistorial(String accountNumber) {
+		List<LoanDto> response = repository.findAllByAccountNumber(accountNumber);
 		
 		if (response.size() > 0) 
 			return ResponseEntity.ok(response);
