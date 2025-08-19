@@ -1,9 +1,7 @@
 package loan.request;
 
 import java.math.BigDecimal;
-
-import loan.InterestType;
-import loan.LoanType;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,16 +13,14 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class LoanRequest {
+public class FeeRequest {
 	
 	private String accountNumber;
 	
+	private Long loanId;
+	
 	private BigDecimal amount;
 	
-	private LoanType type;
-	
-	private InterestType interestType;
-	
-	private Integer numberOfMonths;
+	private LocalDate dateToExpire;
 
 }

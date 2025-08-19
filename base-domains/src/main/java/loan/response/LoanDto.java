@@ -34,5 +34,11 @@ public class LoanDto {
 	private LoanType type;
 	
 	private LoanStatus status;
+	
+	private Double totalInterest;
+	
+	private BigDecimal monthlyFee;
+	
+	private BigDecimal remainingAmount;
 
 }

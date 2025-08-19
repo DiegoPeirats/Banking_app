@@ -29,6 +29,7 @@ import com.diego_peirats.infrastructure.request.CreditDebitRequest;
 import com.diego_peirats.infrastructure.request.TransferRequest;
 import com.diego_peirats.infrastructure.request.UserRequest;
 
+import loan.request.FeeRequest;
 import loan.request.LoanRequest;
 import user.EnquiryRequest;
 import user.Role;
@@ -174,5 +175,18 @@ public class UserServiceImpl implements UserService{
 			return getResponse(user, AccountStatus.LOAN_DENIED.code(), AccountStatus.LOAN_DENIED.message());
 		}
 	}
+	
+	@Override
+	public BankResponse debitFee(FeeRequest request) {
+		try {
+			utils.findUserOperateAndSendTransaction(request.getAccountNumber(), request.getAmount(), TransactionType.DEBIT);
+			
+			return getResponse(user, AccountStatus.ACCOUNT_DEBITED.code(), AccountStatus.ACCOUNT_DEBITED.message());
+		}catch(RuntimeException e) {
+			return getResponse(user, AccountStatus.ACCOUNT_NOT_FOUND.code(), AccountStatus.ACCOUNT_NOT_FOUND.message());
+		}
+	}
+	
+	
 
 }

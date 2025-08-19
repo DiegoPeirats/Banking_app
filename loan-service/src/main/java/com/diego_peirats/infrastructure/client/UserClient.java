@@ -4,6 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import loan.request.FeeRequest;
 import loan.request.LoanRequest;
 import user.EnquiryRequest;
 import user.UserDto;
@@ -16,4 +17,7 @@ public interface UserClient {
 	
 	@PostMapping("/api/v1/processLoan")
 	BankResponse processLoan(@RequestBody LoanRequest request);
+	
+	@PostMapping("/api/v1/debitFee")
+	BankResponse debitFee(@RequestBody FeeRequest request);
 }

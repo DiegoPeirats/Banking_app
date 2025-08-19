@@ -19,6 +19,7 @@ import com.diego_peirats.infrastructure.request.UserRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import loan.request.FeeRequest;
 import loan.request.LoanRequest;
 import user.EnquiryRequest;
 import user.UserDto;
@@ -87,6 +88,11 @@ public class UserController {
 	@PostMapping("/processLoan")
 	public BankResponse processLoan(@RequestBody LoanRequest request) {
 		return service.processLoan(request);
+	}
+	
+	@PostMapping("/debitFee")
+	public BankResponse debitFee(@RequestBody FeeRequest request) {
+		return service.debitFee(request);
 	}
 
 }

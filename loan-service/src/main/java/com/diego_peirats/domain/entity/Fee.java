@@ -1,7 +1,6 @@
 package com.diego_peirats.domain.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,9 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import loan.InterestType;
-import loan.LoanStatus;
-import loan.LoanType;
+import loan.FeeStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,37 +24,25 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name="loans")
-public class Loan {
+@Table(name="fees")
+public class Fee {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private String userAccountNumber;
+	private Long loanId;
+	
+	private String accountNumber;
 	
 	private BigDecimal amount;
 	
-	private LocalDate initialDate;
-	
-	private InterestType interestType;
-	
-	private LocalDate expectedEnd;
-	
-	private LoanType type;
-	
-	private LoanStatus status;
-	
-	private Double totalInterest;
-	
-	private BigDecimal monthlyFee;
-	
-	private BigDecimal remainingAmount;
-	
+	private FeeStatus status;
+
 	@CreationTimestamp
 	private LocalDateTime createdAt;
 	
 	@UpdateTimestamp
 	private LocalDateTime modifiedAt;
-	
+
 }

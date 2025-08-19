@@ -10,6 +10,6 @@ import loan.response.LoanDto;
 
 public interface LoanRepository extends JpaRepository<Loan, Long>{
 	
-	List<LoanDto> findAllByAccountNumber(String userId);
+	List<Loan> findAllByAccountNumber(String userId);
 
 }
