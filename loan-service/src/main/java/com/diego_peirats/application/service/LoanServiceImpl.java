@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.diego_peirats.application.utils.LoanUtils;
 import com.diego_peirats.domain.entity.Fee;
 import com.diego_peirats.domain.entity.Loan;
 import com.diego_peirats.domain.service.FeeService;
@@ -18,6 +19,8 @@ import com.diego_peirats.domain.service.LoanService;
 import com.diego_peirats.infrastructure.client.UserClient;
 import com.diego_peirats.infrastructure.repository.LoanRepository;
 
+import loan.BorrowerRiskLevel;
+import loan.FeeDetail;
 import loan.FeeStatus;
 import loan.InterestType;
 import loan.LoanStatus;
@@ -66,10 +69,7 @@ public class LoanServiceImpl implements LoanService{
 						new AccountInfo(user.getFirstName() + user.getLastName(), user.getAccountBalance(), user.getAccountNumber()));  
 			}
 			
-			Double interest = request.getType().getInterestRate() + user.getRiskLevel().getBaseInterestRate();
-			
-			BigDecimal feeAmount = request.getAmount()
-			        .multiply(BigDecimal.valueOf((interest / 100) + 1));
+			FeeDetail feeDetail = LoanUtils.calculateInterest(request.getType(), user.getRiskLevel(), request.getAmount());
 			
 			Loan loan = loanRepository.save(
 				    Loan.builder()
@@ -77,10 +77,10 @@ public class LoanServiceImpl implements LoanService{
 				        .amount(request.getAmount())
 				        .initialDate(LocalDate.now())
 				        .interestType(request.getInterestType())
-				        .totalInterest(interest)
+				        .totalInterest(feeDetail.getInterest())
 				        .expectedEnd(LocalDate.now().plusMonths(request.getNumberOfMonths()))
 				        .type(request.getType())
-				        .monthlyFee(feeAmount)
+				        .monthlyFee(feeDetail.getAmount())
 				        .remainingAmount(request.getAmount())
 				        .status(LoanStatus.OPEN)
 				        .build()
@@ -96,6 +96,8 @@ public class LoanServiceImpl implements LoanService{
 		}
 	}
 	
+
+	
 	@Scheduled(cron = "0 0 0 1 * ?")
 	private void debitFeesAndRecalculateLoan(String accountNumber) {
 		
@@ -104,21 +106,35 @@ public class LoanServiceImpl implements LoanService{
 		loanList.stream()
 			.filter(loan -> loan.getStatus().equals(LoanStatus.OPEN))
 			.forEach(loan -> {
-				FeeRequest feeRequest = FeeRequest.builder()
-						.amount(loan.getMonthlyFee())
-						.accountNumber(accountNumber)
-						.loanId(loan.getId())
-						.dateToExpire(loan.getExpectedEnd())
-						.build();
-				feeService.applyMonthlyFees(feeRequest);
+				if (loan.getInterestType().equals(InterestType.FIX)) {
+					
+					applyFeeAndUpdateLoan(loan);
+				}
 				
-				loan.setAmount(loan.getAmount().subtract(feeRequest.getAmount()));
+				BorrowerRiskLevel borrowerRiskLevel = userClient.getUserByAccountNumber(new EnquiryRequest(loan.getUserAccountNumber())).getRiskLevel();
 				
-				loanRepository.save(loan);
+				FeeDetail feeDetail = LoanUtils.calculateInterest(loan.getType(), borrowerRiskLevel, loan.getAmount());
 				
-				//falta recalcular en caso de que el interes sea variable
+				loan.setTotalInterest(feeDetail.getInterest());
+				loan.setMonthlyFee(feeDetail.getAmount());
+				
+				applyFeeAndUpdateLoan(loan);
 			});
 		
+	}
+	
+	private void applyFeeAndUpdateLoan(Loan loan) {
+		FeeRequest feeRequest = FeeRequest.builder()
+				.amount(loan.getMonthlyFee())
+				.accountNumber(loan.getUserAccountNumber())
+				.loanId(loan.getId())
+				.dateToExpire(loan.getExpectedEnd())
+				.build();
+		feeService.applyMonthlyFees(feeRequest);
+		
+		loan.setAmount(loan.getAmount().subtract(feeRequest.getAmount()));
+		
+		loanRepository.save(loan);
 	}
 
 	@Override
